@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -12,7 +13,7 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $post = Post::with('category')->orderBy('created_at', 'DESC');
+        $post = Post::with('category', 'user')->orderBy('created_at', 'DESC');
 
         if (!empty($request->q)) {
             $post = $post->where('title', 'LIKE', '%' . $request->q . '%');
@@ -74,7 +75,8 @@ class PostController extends Controller
             'photo' => $filename,
             'description' => $request->description,
             'is_active' => $request->status,
-            'category_id' => $request->category
+            'category_id' => $request->category,
+            'user_id' => $request->user_id
         ]);
 
         if ($post) {
